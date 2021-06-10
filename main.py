@@ -94,7 +94,6 @@ def print_map():
 def find_path():
     global map_length, map_width, start_point, end_point
     count = 0
-    judge = 0
     # Open and Close 表
     open_list = []
     close_list = []
@@ -111,12 +110,12 @@ def find_path():
         count = count + 1
 
         expand_list = find_surround_way(minFpoint, close_list)
+        if robot_map[end_point] in expand_list:
+            robot_map[end_point].parent_block = minFpoint
+            print('yes!')
+            break
         for expoint in expand_list:
-            if robot_map[end_point] in expand_list:
-                robot_map[end_point].parent_block = minFpoint
-                print('yes!')
-                judge = 1
-                continue
+
             if expoint in open_list:
                 new_gain = cal_alter_g(expoint, minFpoint)
                 if new_gain < expoint.bl_g:
@@ -133,8 +132,6 @@ def find_path():
                 expoint.parent_block = minFpoint
                 cal_function_F(expoint, robot_map[end_point])
                 open_list.append(expoint)
-        if judge == 1:
-            break
     End_game = robot_map[end_point]
     while True:
         End_game.is_path = 1
@@ -274,7 +271,7 @@ def display(op, cl, count):
         cmap = ListedColormap(['LightGray', 'Black', 'Lightgreen', 'Turquoise', 'Orange', 'Indigo'])
     plt.figure(count)
     plt.matshow(mat, cmap=cmap)
-    plt.savefig('./zuoye_map/%s.jpg' % count)
+    plt.savefig('./random/%s.jpg' % count)
     plt.show()
 
 
@@ -283,7 +280,7 @@ if __name__ == '__main__':
     end_point = -1
     map_length = -1
     map_width = -1
-    obstacle_point = 1300
+    obstacle_point = 2000
     init_map(map_length, map_width, obstacle_point)
     print_map()
     find_path()
